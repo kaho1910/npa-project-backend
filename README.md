@@ -1,13 +1,13 @@
 # npa-project-backend
 
 Activate the environment by
-- MacOS/Linux: <mark>source .venv/bin/activate</mark>
+- MacOS/Linux: ```source .venv/bin/activate```
 - Windows
-  - in CMD: <mark>.venv/Scripts/activate.bat</mark>
-  - in Powershell: <mark>.venv/Scripts/Activate.ps1</mark>
+  - in CMD: ```.venv/Scripts/activate.bat```
+  - in Powershell: ```.venv/Scripts/Activate.ps1```
 
-Export all install libraries <mark>pip freeze > requirements.txt</mark>
+Export all install libraries ```pip freeze > requirements.txt```
 
-Install all required libraries <mark>pip install -r requirements.txt</mark>
+Install all required libraries ```pip install -r requirements.txt```
 
-Deactivate environment by <mark>deactivate</mark>
+Deactivate environment by ```deactivate```
