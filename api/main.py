@@ -12,6 +12,25 @@ async def root():
     return {"message": "Hello World"}
 
 # # # # # # # # # #
+# Show
+
+@app.get("/show_ip")
+def show_ip():
+    return {"message": "show ip int br"}
+
+@app.get("/show_run")
+def show_run():
+    return {"message": "show running config"}
+
+@app.get("/show_ip_route")
+def show_ip_route():
+    return {"message": "show ip route"}
+
+@app.get("/show_ospf")
+def show_ospf():
+    return {"message": "show ospf"}
+
+# # # # # # # # # #
 # Interface
 
 @app.get("/ip_addr")
