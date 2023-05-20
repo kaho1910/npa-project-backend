@@ -1,5 +1,7 @@
 # npa-project-backend
 
+Install virtual environments: ```python -m venv .venv```
+
 Activate the environment by
 - MacOS/Linux: ```source .venv/bin/activate```
 - Windows
