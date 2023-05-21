@@ -99,3 +99,20 @@ class StaticRouteList(BaseModel):
 @app.post("/route")
 def set_static_route(routes: StaticRouteList):
     return {"all_routes": routes.routes}
+
+# # # # # # # # # #
+# Telnet / SSH
+
+@app.post("/telnet_cred")
+def set_tel_cred(username, password):
+    return {"telnet_cred": {
+        "username": username,
+        "password": password
+    }}
+
+@app.post("/ssh_cred")
+def set_ssh_cred(username, password):
+    return {"ssh_cred": {
+        "username": username,
+        "password": password
+    }}
