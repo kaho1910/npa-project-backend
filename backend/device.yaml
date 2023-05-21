@@ -1,7 +1,7 @@
 devices:
     RS:
         type: router
-        os: ios
+        os: iosxe
         credentials:
             default:
                 username: admin
@@ -13,7 +13,7 @@ devices:
                 command: 'ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.201'
     test:
         type: router
-        os: ios
+        os: iosxe
         credentials:
             default:
                 username: admin

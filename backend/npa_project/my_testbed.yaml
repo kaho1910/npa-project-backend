@@ -1,0 +1,33 @@
+devices:
+  RS:
+    connections:
+      cli:
+        command: 'ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.201'
+    credentials:
+      default:
+        password: '%ENC{w5HDncOOw53DocKQwpbCmMKa}'
+        username: admin
+      enable:
+        password: '%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}'
+    os: iosxe
+    platform: iosv
+    custom:
+      type: Router
+      hostname: RS
+      ipaddress: 10.0.15.201
+  test:
+    connections:
+      cli:
+        command: 'ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.202'
+    credentials:
+      default:
+        password: '%ENC{w5HDncOOw53DocKQwpbCmMKa}'
+        username: admin
+      enable:
+        password: '%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}'
+    os: iosxe
+    platform: iosv
+    custom:
+      type: Router
+      hostname: test
+      ipaddress: 10.0.15.202
