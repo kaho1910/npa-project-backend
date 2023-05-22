@@ -217,9 +217,9 @@ class SW_Device(Device):
 
 class Devices:
     """"""
-    def __init__(self) -> None:
+    def __init__(self, testBed_loc) -> None:
         self.devices = {}
-        self.testbed = loader.load('my_testbed.yaml')
+        self.testbed = loader.load(testBed_loc)
         for x in self.testbed.devices:
             device = self.testbed.devices[x]
             if device.custom.type == "Router":
@@ -235,9 +235,9 @@ class Devices:
     def add_device(self, type: str, hostname: str, ipaddr: str) -> None:
         # add device to yaml file
         if type == "Router":
-            device = R_Device(loader.load('my_testbed.yaml').devices['hostname'])
+            device = R_Device(loader.load(self.testbed).devices['hostname'])
         else:
-            device = SW_Device(loader.load('my_testbed.yaml').devices['hostname'])
+            device = SW_Device(loader.load(self.testbed).devices['hostname'])
         self.devices[hostname] = device
 
     def remove_device(self, hostname: str) -> None:
@@ -258,7 +258,7 @@ class Devices:
         return devices
 
 if __name__ == '__main__':
-    topo = Devices()
+    topo = Devices(testBed_loc="my_testbed.yaml")
     print(topo.devices["RS"].get_device_info())
     topo.devices["RS"].config_interface_s("int lo0", "static", "1.1.1.1", "255.255.255.255", False)
     print(repr(topo.devices["RS"].interfaces))
