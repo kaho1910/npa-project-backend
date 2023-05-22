@@ -20,6 +20,7 @@ from typing import List
 from backend.npa_project.show import show_command
 from backend.npa_project.config import *
 
+topo = Devices(testBed_loc="../backend/npa_project/tb.yaml")
 
 app = FastAPI()
 
