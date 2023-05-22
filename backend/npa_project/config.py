@@ -122,15 +122,15 @@ class Device:
         self.testbed.configure(config.format(name, action, protocol))
 
     def get_backup_config(self) -> str:
-        self.testbed.connect()
+        self.testbed.connect(log_stdout=False)
         return self.testbed.execute("show run")
     
     def add_backup_config(self, config: str) -> None:
-        self.testbed.connect()
+        self.testbed.connect(log_stdout=False)
         self.testbed.config(config)
 
     def save_config(self):
-        self.testbed.connect()
+        self.testbed.connect(log_stdout=False)
         self.testbed.execute("write")
 
 class R_Interfaces:
@@ -157,7 +157,7 @@ class R_Device(Device):
         self.load_data()
 
     def load_data(self) -> None:
-        self.testbed.connect()
+        self.testbed.connect(log_stdout=False)
         print(type(self.get_device_info()))
         self.interfaces = R_Interfaces(self.int_load)
         self.static_routes = Routes(self.route_load)
@@ -165,10 +165,26 @@ class R_Device(Device):
         self.acls = ACLS(self.acls_load)
 
     def get_device_info(self) -> dict:
-        self.int_load = self.testbed.parse("show ip interface brief")
-        self.route_load = self.testbed.parse("show ip static route")
-        self.ospf_load = self.testbed.parse("show ip ospf")
-        self.acls_load = self.testbed.parse("show ip access-lists")
+        try:
+            self.int_load = self.testbed.parse("show ip interface brief")
+        except:
+            self.int_load = {}
+            print("ParseError")
+        try:
+            self.route_load = self.testbed.parse("show ip static route")
+        except:
+            self.route_load = {}
+            print("ParseError")
+        try:
+            self.ospf_load = self.testbed.parse("show ip ospf")
+        except:
+            self.ospf_load = {}
+            print("ParseError")
+        try:
+            self.acls_load = self.testbed.parse("show ip access-lists")
+        except:
+            self.acls_load = {}
+            print("ParseError")
         return {
             "interfaces": self.int_load,
             "routes": self.route_load,
@@ -178,7 +194,7 @@ class R_Device(Device):
     
     def device_test_connection(self) -> bool:
         try:
-            self.testbed.connect()
+            self.testbed.connect(log_stdout=False)
             return True
         except:
             return False
@@ -189,7 +205,7 @@ class SW_Device(Device):
         super(testbed)
 
     def load_data(self) -> None:
-        self.testbed.connect()
+        self.testbed.connect(log_stdout=False)
         print(type(self.get_device_info()))
         self.interfaces = R_Interfaces(self.int_load)
         self.static_routes = Routes(self.route_load)
@@ -210,7 +226,7 @@ class SW_Device(Device):
     
     def device_test_connection(self) -> bool:
         try:
-            self.testbed.connect()
+            self.testbed.connect(log_stdout=False)
             return True
         except:
             return False
@@ -219,7 +235,8 @@ class Devices:
     """"""
     def __init__(self, testBed_loc) -> None:
         self.devices = {}
-        self.testbed = loader.load(testBed_loc)
+        self.testbed_loc = testBed_loc
+        self.testbed = loader.load(self.testbed_loc)
         for x in self.testbed.devices:
             device = self.testbed.devices[x]
             if device.custom.type == "Router":
@@ -235,9 +252,9 @@ class Devices:
     def add_device(self, type: str, hostname: str, ipaddr: str) -> None:
         # add device to yaml file
         if type == "Router":
-            device = R_Device(loader.load(self.testbed).devices['hostname'])
+            device = R_Device(loader.load(self.testbed_loc).devices['hostname'])
         else:
-            device = SW_Device(loader.load(self.testbed).devices['hostname'])
+            device = SW_Device(loader.load(self.testbed_loc).devices['hostname'])
         self.devices[hostname] = device
 
     def remove_device(self, hostname: str) -> None:
@@ -258,10 +275,10 @@ class Devices:
         return devices
 
 if __name__ == '__main__':
-    topo = Devices(testBed_loc="my_testbed.yaml")
-    print(topo.devices["RS"].get_device_info())
-    topo.devices["RS"].config_interface_s("int lo0", "static", "1.1.1.1", "255.255.255.255", False)
-    print(repr(topo.devices["RS"].interfaces))
+    topo = Devices(testBed_loc='backend/npa_project/tb.yaml')
+    print(topo.devices["R1"].get_device_info())
+    topo.devices["R1"].config_interface_s("int lo0", "static", "1.1.1.1", "255.255.255.255", False)
+    print(repr(topo.devices["R1"].interfaces))
     # test1 = Interface("interface GigabitEthernet0/3", "static", "10.0.15.201/24", True)
     # test2 = Interface("interface GigabitEthernet0/0", "static", "172.16.1.1/24", True)
     # test3 = SW_Interface("interface GigabitEthernet0/0", "static", "172.16.1.1/24", True)
