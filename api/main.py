@@ -17,7 +17,9 @@ from fastapi import FastAPI, Body
 from pydantic import BaseModel
 from typing import List
 
-from backend.show import show_command
+from backend.npa_project.show import show_command
+from backend.npa_project.config import *
+
 
 app = FastAPI()
 
