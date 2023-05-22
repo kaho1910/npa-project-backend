@@ -51,13 +51,8 @@ def show_ospf(data: dict):
 # Interface
 
 @app.get("/ip_addr")
-def get_ip():
-    return {
-        "int": "Fa0/0",
-        "description": "TEST TEST",
-        "ip": "255.255.255.255",
-        "subnet": "255.255.255.255"
-        }
+def get_ip(data: dict):
+    return show_command(data["device"], f"show ip interface brief {data['interface']}")
 
 class InterfaceIP(BaseModel):
     interface: str
@@ -100,10 +95,6 @@ def set_network_ospf(process, network: OSPFNetwork):
         "ospf_process": process,
         "network": network.ospf
         }
-
-@app.get("/route")
-def get_route():
-    return {"route": "This is ROUTE"}
 
 class StaticRoute(BaseModel):
     network: str
