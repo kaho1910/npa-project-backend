@@ -36,54 +36,79 @@ async def root():
 
 @app.get("/show_ip")
 def show_ip(data: dict):
-    return show_command(data["device"], "show ip interface brief")
+    try:
+        res = show_command(data["device"], "show ip interface brief")
+    except:
+        res = {"message": "not available"}
+    return res
 
 @app.get("/show_run")
 def show_run():
-    return {"message": "show running config"} # NOT DONE
+    try:
+        res = {"message": "show running config"} # NOT DONE
+    except:
+        res = {"message": "not available"}
+    return res
 
 @app.get("/show_ip_route")
 def show_ip_route(data: dict):
-    return show_command(data["device"], "show ip route")
+    try:
+        res = show_command(data["device"], "show ip route")
+    except:
+        res = {"message": "not available"}
+    return res
 
 @app.get("/show_ospf")
 def show_ospf(data: dict):
-    return show_command(data["device"], "show ip ospf")
+    try:
+        res = show_command(data["device"], "show ip ospf")
+    except:
+        res = {"message": "not available"}
+    return res
 
 @app.get("/show_all")
 def show_all(data: dict):
-    return None # Backend function
+    try:
+        res = topo.devices[data["device"]].get_device_info()
+    except:
+        res = {"message": "not available"}
+    return res
 
 # # # # # # # # # #
 # Interface
 
 @app.get("/ip_addr")
 def get_ip(data: dict):
-    return show_command(data["device"], f"show ip interface brief {data['interface']}")
+    try:
+        res = show_command(data["device"], f"show ip interface brief {data['interface']}")
+    except:
+        res = {"message": "not available"}
+    return res
 
 class InterfaceIP(BaseModel):
+    device: str
     interface: str
     description: str | None = None
     ip: str
-    subnet: str
+    subnet: str | None = None
+    status: bool
 
 @app.post("/interface")
 async def set_interface(data: InterfaceIP):
     data = data.dict()
-    return data
-
-class Interface(BaseModel):
-    interface: str
-
-@app.post("/interface_shut/")
-def interface_shut(interface: Interface):
-    interface = interface.dict()
-    return {"message": f"shutdown {interface['interface']}"}
-
-@app.post("/interface_noshut/")
-def interface_noshut(interface: Interface):
-    interface = interface.dict()
-    return {"message": f"no shutdown {interface['interface']}"}
+    if not data["ip"].isalpa():
+        topo.devices[data["device"]].config_interface_s(f"int {data['interface']}", "", data["ip"], data["subnet"], data["description"], data["status"])
+    elif data["ip"].lower() == "dhcp":
+        topo.devices[data["device"]].config_interface_d(f"int {data['interface']}", "", data["status"])
+    else:
+        return {"message": message}
+    try:
+        # temp
+        show_command(data["device"], f"show ip interface brief {data['interface']}")
+        message = "success"
+    except:
+        message = "failed"
+    return {"message": message}
 
 # # # # # # # # # #
 # Routing
