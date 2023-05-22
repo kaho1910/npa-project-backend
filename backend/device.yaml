@@ -1,0 +1,46 @@
+devices:
+    RS:
+        type: router
+        os: iosxe
+        credentials:
+            default:
+                username: admin
+                password: admin1234
+            enable:
+                password: rootroot
+        connections:
+            vty:
+                command: 'ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.201'
+    test:
+        type: router
+        os: iosxe
+        credentials:
+            default:
+                username: admin
+                password: admin1234
+            enable:
+                password: rootroot
+        connections:
+            vty:
+                command: 'ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.202'
+topology:
+    RS:
+        interfaces:
+            GigabitEthernet0/1:
+                ipv4: 10.10.10.1/24
+                link: link-1
+                type: gigabitethernet
+            Loopback0:
+                ipv4: 192.168.0.1/32
+                link: ios1_Loopback0
+                type: loopback
+    test:
+        interfaces:
+            GigabitEthernet0/0:
+                ipv4: 10.10.10.2/24
+                link: link-1
+                type: gigabitethernet
+            Loopback0:
+                ipv4: 192.168.0.2/32
+                link: ios2_Loopback0
+                type: loopback
