@@ -1,7 +1,7 @@
 # import pyats
 from genie.testbed import load
 
-tb = load("../backend/tb.yaml")
+tb = load("../backend/npa_project/tb.yaml")
 
 def show_command(device, command):
     device = device.upper()
