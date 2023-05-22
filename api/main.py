@@ -32,20 +32,20 @@ async def root():
 # Show
 
 @app.get("/show_ip")
-def show_ip():
-    return {"message": "show ip int br"}
+def show_ip(data: dict):
+    return show_command(data["device"], "show ip interface brief")
 
 @app.get("/show_run")
 def show_run():
-    return {"message": "show running config"}
+    return {"message": "show running config"} # NOT DONE
 
 @app.get("/show_ip_route")
-def show_ip_route():
-    return {"message": "show ip route"}
+def show_ip_route(data: dict):
+    return show_command(data["device"], "show ip route")
 
 @app.get("/show_ospf")
-def show_ospf():
-    return {"message": "show ospf"}
+def show_ospf(data: dict):
+    return show_command(data["device"], "show ip ospf")
 
 # # # # # # # # # #
 # Interface
