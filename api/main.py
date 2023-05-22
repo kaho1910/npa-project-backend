@@ -47,6 +47,10 @@ def show_ip_route(data: dict):
 def show_ospf(data: dict):
     return show_command(data["device"], "show ip ospf")
 
+@app.get("/show_all")
+def show_all(data: dict):
+    return None # Backend function
+
 # # # # # # # # # #
 # Interface
 
