@@ -1,22 +1,27 @@
-import yaml
-import json
+import yaml, json
 
-def convert_yaml_to_json(yaml_file):
-    try:
-        with open(yaml_file, 'r') as file:
-            # Load YAML data
-            yaml_data = yaml.safe_load(file)
-            
-            # Convert YAML to JSON
-            json_data = json.dumps(yaml_data, indent=4)
-            
-            return json_data
-    except FileNotFoundError:
-        print(f"File '{yaml_file}' not found.")
-    except yaml.YAMLError as e:
-        print(f"Error parsing YAML: {str(e)}")
+# Convert YAML file to dictionary
+def yaml_to_dict(file_path):
+    with open(file_path, 'r') as file:
+        data = yaml.safe_load(file)
+    return data
 
-# Example usage
-yaml_file_path = 'my_testbed.yaml'
-json_data = convert_yaml_to_json(yaml_file_path)
-print(json_data)
+# Convert list to JSON file
+def list_to_json(data):
+    return json.dump(data, open('test.json', 'w'), indent=2)
+
+# Path to the YAML file
+yaml_file = 'my_testbed.yaml'
+
+# Convert YAML to dictionary
+data_dict = yaml_to_dict(yaml_file)
+
+# Convert list to JSON
+devices = []
+for device in data_dict['devices']:
+    data = data_dict['devices'][device]['custom']
+    data["status"] = device_test_connection()
+    devices.append(data)
+    
+list_to_json(devices)
+print(open('test.json', 'r'))

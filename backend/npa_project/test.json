@@ -1,0 +1,15 @@
+[
+  {
+    "type": "Router",
+    "hostname": "RS",
+    "ipaddress": "10.0.15.201",
+    "abstraction": {
+      "order": [
+        "os",
+        "platform",
+        "model"
+      ]
+    },
+    "status": true
+  }
+]
