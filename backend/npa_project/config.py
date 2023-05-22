@@ -59,27 +59,37 @@ class Device:
             "acls": self.acls_load
         }
 
-    def config_interface_d(self, interface: str, mode: str, status: bool) -> None:
+    def config_interface_d(self, interface: str, mode: str, desc: str,status: bool) -> None:
         # self.interfaces[interface].mode = mode
         # self.interfaces[interface].status = status
+        if desc == "":
+            desc = "\n"
+        else:
+            desc = "desc " + desc
         config = """
         {}
             ip add dhcp
             {}
+            {}
         """
-        self.testbed.configure(config.format(interface, "no shut" if status else "shut"))
+        self.testbed.configure(config.format(interface, desc, "no shut" if status else "shut"))
     
-    def config_interface_s(self, interface: str, mode: str, ipaddr: str, subnet: str, status: bool) -> None:
+    def config_interface_s(self, interface: str, mode: str, ipaddr: str, subnet: str, desc: str, status: bool) -> None:
         # self.interfaces[interface].mode = mode
         # self.interfaces[interface].ipaddr = ipaddr
         # self.interfaces[interface].subnet = subnet
         # self.interfaces[interface].status = status
+        if desc == "":
+            desc = "\n"
+        else:
+            desc = "desc " + desc
         config = config = """
         {}
             ip add {} {}
             {}
+            {}
         """
-        self.testbed.configure(config.format(interface, ipaddr, subnet, "no shut" if status else "shut"))
+        self.testbed.configure(config.format(interface, ipaddr, subnet, desc,"no shut" if status else "shut"))
     
     def config_static_route_add(self, dst: str, network: str, next_hop: str) -> None:
         config = """
