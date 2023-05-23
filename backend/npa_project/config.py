@@ -195,13 +195,21 @@ class R_Device(Device):
         self.testbed = testbed
         self.load_data()
 
+    def device_test_connection(self) -> bool:
+        try:
+            self.testbed.connect(log_stdout=False)
+            return True
+        except:
+            return False
+
     def load_data(self) -> None:
-        self.testbed.connect(log_stdout=False)
-        self.get_device_info()
-        self.interfaces = R_Interfaces(self.int_load)
-        self.static_routes = Routes(self.route_load)
-        self.ospf = OSPF(self.ospf_load)
-        self.acls = ACLS(self.acls_load)
+        # self.testbed.connect(log_stdout=False)
+        if self.device_test_connection():
+            self.get_device_info()
+        # self.interfaces = R_Interfaces(self.int_load)
+        # self.static_routes = Routes(self.route_load)
+        # self.ospf = OSPF(self.ospf_load)
+        # self.acls = ACLS(self.acls_load)
 
     def get_device_info(self) -> dict:
         try:
@@ -237,13 +245,21 @@ class SW_Device(Device):
         self.testbed = testbed
         self.load_data()
 
+    def device_test_connection(self) -> bool:
+        try:
+            self.testbed.connect(log_stdout=False)
+            return True
+        except:
+            return False
+
     def load_data(self) -> None:
-        self.testbed.connect(log_stdout=False)
-        self.get_device_info()
-        self.interfaces = SW_Interfaces(self.int_load)
-        self.static_routes = Routes(self.route_load)
-        self.ospf = OSPF(self.ospf_load)
-        self.acls = ACLS(self.acls_load)
+        # self.testbed.connect(log_stdout=False)
+        if self.device_test_connection():
+            self.get_device_info()
+        # self.interfaces = SW_Interfaces(self.int_load)
+        # self.static_routes = Routes(self.route_load)
+        # self.ospf = OSPF(self.ospf_load)
+        # self.acls = ACLS(self.acls_load)
 
     def get_device_info(self) -> dict:
         try:
@@ -358,17 +374,20 @@ class SW_Device(Device):
 
 class Devices:
     """"""
-    def __init__(self, testBed_loc="my_testbed.yaml") -> None:
+    def __init__(self, testBed_loc="backend/npa_project/tb.yaml") -> None:
         self.devices = {}
         self.testbed_loc = testBed_loc
         self.testbed = loader.load(self.testbed_loc)
         for x in self.testbed.devices:
-            device = self.testbed.devices[x]
-            if device.custom.type == "Router":
-                self.add_devices(R_Device(device))
-            else:
-                self.add_devices(SW_Device(device))
-                pass
+            try:
+                device = self.testbed.devices[x]
+                if device.custom.type == "Router":
+                    self.add_devices(R_Device(device))
+                else:
+                    self.add_devices(SW_Device(device))
+                    pass
+            except:
+                continue
 
     def add_devices(self, device: Device) -> None:
         self.devices[device.testbed.custom.hostname] = device
@@ -419,7 +438,8 @@ class Devices:
 import json
 if __name__ == '__main__':
     topo = Devices()
-    topo.remove_device("test")
+    topo.devices["R3"]
+    # topo.remove_device("test")
     # print(topo.devices["RS"].device_test_connection())
     # print(topo.devices["test"].device_test_connection())
     # json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
