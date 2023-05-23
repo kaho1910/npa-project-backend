@@ -193,7 +193,7 @@ class AclList(BaseModel):
     device: str
     name: str
     action: str
-    protocols: str
+    protocol: str
     ip: str
     wildcard: str
     dst: str
