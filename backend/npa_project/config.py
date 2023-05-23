@@ -183,7 +183,8 @@ class SW_Interfaces:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
     # def add_interface(self, interface: Interface) -> None:
     #     self.interfaces.append(interface)
@@ -368,23 +369,37 @@ class Devices:
             else:
                 self.add_devices(SW_Device(device))
                 pass
-        # print(self.get_devices())
 
     def add_devices(self, device: Device) -> None:
         self.devices[device.testbed.custom.hostname] = device
 
-    def add_device(self, type: str, hostname: str, ipaddr: str) -> None:
-        # add device to yaml file
+    def add_device(self, type_device: str, hostname: str, ipaddr: str) -> None:
+        import yaml, copy
 
-        if type == "Router":
-            device = R_Device(loader.load(self.testbed_loc).devices['hostname'])
+        yaml_data = yaml.safe_load(open(self.testbed_loc, 'r'))
+        template = copy.deepcopy(yaml_data["devices"][list(yaml_data["devices"].keys())[0]])
+        command = "ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin {}"
+        custom = { "type": type_device, "hostname": hostname, "ipaddress": ipaddr }
+
+        template['connections']['cli']['command'] = command.format(ipaddr)
+        template['custom'] = custom
+        yaml_data['devices'][hostname] = template
+        yaml.dump(yaml_data, open(self.testbed_loc, 'w'), default_flow_style=False)
+
+        if type_device == "Router":
+            device = R_Device(loader.load(self.testbed_loc).devices[hostname])
         else:
-            device = SW_Device(loader.load(self.testbed_loc).devices['hostname'])
-        self.devices[hostname] = device
+            device = SW_Device(loader.load(self.testbed_loc).devices[hostname])
+        self.add_devices(device)
 
     def remove_device(self, hostname: str) -> None:
         # remove device from yaml file
-        
+        import yaml
+
+        yaml_data = yaml.safe_load(open(self.testbed_loc, 'r'))
+        del yaml_data["devices"][hostname]
+        yaml.dump(yaml_data, open(self.testbed_loc, 'w'), default_flow_style=False)
+
         del self.devices[hostname]
 
     def get_devices(self) -> list:
@@ -404,6 +419,7 @@ class Devices:
 import json
 if __name__ == '__main__':
     topo = Devices()
-    print(topo.devices["RS"].device_test_connection())
-    print(topo.devices["test"].device_test_connection())
+    topo.remove_device("test")
+    # print(topo.devices["RS"].device_test_connection())
+    # print(topo.devices["test"].device_test_connection())
     # json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
