@@ -196,6 +196,7 @@ class R_Device(Device):
 
     def load_data(self) -> None:
         self.testbed.connect(log_stdout=False)
+        self.get_device_info()
         self.interfaces = R_Interfaces(self.int_load)
         self.static_routes = Routes(self.route_load)
         self.ospf = OSPF(self.ospf_load)
