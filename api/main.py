@@ -31,6 +31,9 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+# # # # # # # # # # # # # # # # # # # #
+# ROUTER
+
 # # # # # # # # # #
 # Show
 
@@ -193,3 +196,60 @@ def set_static_route_del(routes: StaticRouteList):
 #         "username": username,
 #         "password": password
 #     }}
+
+# # # # # # # # # # # # # # # # # # # #
+# Switch
+
+# # # # # # # # # #
+# Show
+
+@app.get("/show_vlan")
+def show_vlan(data: dict):
+    try:
+        res = show_command(data["device"], "show vlan")
+    except:
+        res = {"message": "not available"}
+    return res
+
+
+# # # # # # # # # #
+# Vlan
+
+class Vlan(BaseModel): # None Error
+    device: str
+    vlan: int
+    name: str
+    ip: str
+    subnet: str
+    description: str | None = None
+    status: bool
+
+@app.post("/vlan")
+def add_vlan(data: Vlan):
+    data = data.dict()
+    topo.devices[data["device"]].config_vlan_add(f"vlan {data['interface']}", data["name"], data["ip"], data["subnet"], data["description"], data["status"])
+    return {"message": "success"}
+
+@app.post("/vlan_del")
+def del_vlan(data: dict):
+    topo.devices[data.device].config_vlan_del(data.vlan)
+    return {"message": "success"}
+
+class VlanMode(BaseModel):
+    device: str
+    interface: str
+    vlan: int
+    allow: str | None = None
+    status: bool
+
+@app.post("/vlan_access")
+def config_vlan_a(data: VlanMode):
+    data = data.dict()
+    topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["status"])
+    return {"message": "success"}
+
+@app.post("/vlan_trunk")
+def config_vlan_t(data: VlanMode):
+    data = data.dict()
+    topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["allow"], data["status"])
+    return {"message": "success"}

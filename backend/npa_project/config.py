@@ -94,7 +94,7 @@ class Device:
             desc = "\n"
         else:
             desc = "desc " + desc
-        config = config = """
+        config = """
         {}
             ip add {} {}
             {}
@@ -284,27 +284,32 @@ class SW_Device(Device):
             "switchport": self.switchport_load,
             "acls": self.acls_load
         }
-
-    def config_interface_d(self, interface: str, mode: str, status: bool) -> None:
+    def config_interface_d(self, interface: str, mode: str, desc: str, status: bool) -> None:
         config = """
         {}
             no sw
             ip add dhcp
             {}
+            {}
         """
-        self.testbed.configure(config.format(interface, "no shut" if status else "shut"))
+        self.testbed.configure(config.format(interface, desc, "no shut" if status else "shut"))
     
-    def config_interface_s(self, interface: str, mode: str, ipaddr: str, subnet: str, status: bool) -> None:
-        config = config = """
+    def config_interface_s(self, interface: str, mode: str, ipaddr: str, subnet: str, desc: str, status: bool) -> None:
+        if desc is None:
+            desc = "\n"
+        else:
+            desc = "desc " + desc
+        config = """
         {}
             no sw
             ip add {} {}
             {}
+            {}
         """
-        self.testbed.configure(config.format(interface, ipaddr, subnet, "no shut" if status else "shut"))
+        self.testbed.configure(config.format(interface, ipaddr, subnet, desc, "no shut" if status else "shut"))
     
     def config_interface_sw_a(self, interface: str, vlan: int, status: bool) -> None:
-        config = config = """
+        config = """
         {}
             switchport mode access
             switchport access vlan {}
@@ -313,7 +318,7 @@ class SW_Device(Device):
         self.testbed.configure(config.format(interface, vlan, "no shut" if status else "shut"))
     
     def config_interface_sw_t(self, interface: str, vlan: int, allow: str, status: bool) -> None:
-        config = config = """
+        config = """
         {}
             switchport mode trunk
             switchport trunk native vlan {}
@@ -322,22 +327,27 @@ class SW_Device(Device):
         """
         self.testbed.configure(config.format(interface, vlan, allow, "no shut" if status else "shut"))
 
-    def config_vlan_add(self, interface: str, name: str, ipaddr: str, subnet: str, status: bool) -> None:
-        config = config = """
-        {}
+    def config_vlan_add(self, vlan: str, name: str, ipaddr: str, subnet: str, desc: str, status: bool) -> None:
+        if desc is None:
+            desc = "\n"
+        else:
+            desc = "desc " + desc
+        config = """
+        vlan {}
             name {}
-        int {}
-            ip add {}
+        int vlan {}
+            ip add {} {}
+            {}
             {}
         """
-        self.testbed.configure(config.format(interface, name, ipaddr, subnet, "no shut" if status else "shut"))
+        self.testbed.configure(config.format(vlan, name, vlan, ipaddr, subnet, desc, "no shut" if status else "shut"))
 
-    def config_vlan_del(self, interface: str) -> None:
-        config = config = """
-        no int {}
-        no {}
+    def config_vlan_del(self, vlan: str) -> None:
+        config = """
+        no int vlan {}
+        no vlan {}
         """
-        self.testbed.configure(config.format(interface, interface))
+        self.testbed.configure(config.format(vlan, vlan))
 
 class Devices:
     """"""
