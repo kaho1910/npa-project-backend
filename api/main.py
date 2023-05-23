@@ -176,8 +176,6 @@ class AclList(BaseModel):
     wildcard: str
     dst: str
     network: str
-    eq: str
-    port: str
     eq: str | None = None
     port: str | None = None
 
