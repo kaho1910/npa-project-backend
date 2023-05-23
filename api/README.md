@@ -1,1 +1,1 @@
-run FastAPI with <mark>uvicorn main:app --reload</mark>
+run FastAPI with ```uvicorn main:app --reload```
