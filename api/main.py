@@ -215,7 +215,7 @@ def show_vlan(data: dict):
 # # # # # # # # # #
 # Vlan
 
-class Vlan(BaseModel): # None Error
+class Vlan(BaseModel):
     device: str
     vlan: int
     name: str
