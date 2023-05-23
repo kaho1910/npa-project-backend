@@ -2,11 +2,13 @@ from pyats.topology import loader
 
 class Interface:
     """"""
-    def __init__(self, mode: str, ipaddr: str, subnet: str, status: bool) -> None:
-        self.mode = mode
-        self.ipaddr = ipaddr
-        self.subnet = subnet
-        self.status = status
+    def __init__(self, info: dict) -> None:
+        self.info = info
+        self.load_data()
+
+    def load_data(self) -> None:
+        # print(self.info)
+        pass
 
 class Routes:
     """"""
@@ -15,7 +17,8 @@ class Routes:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
 class OSPF:
     """"""
@@ -24,7 +27,8 @@ class OSPF:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
 class ACLS:
     """"""
@@ -33,13 +37,11 @@ class ACLS:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
 class Device:
-    """""""" 
-    import abc
-
-    @abc.abstractmethod
+    """"""""
     def device_test_connection(self) -> bool:
         try:
             self.testbed.connect()
@@ -192,7 +194,6 @@ class R_Device(Device):
 
     def load_data(self) -> None:
         self.testbed.connect(log_stdout=False)
-        type(self.get_device_info())
         self.interfaces = R_Interfaces(self.int_load)
         self.static_routes = Routes(self.route_load)
         self.ospf = OSPF(self.ospf_load)
@@ -225,13 +226,6 @@ class R_Device(Device):
             "ospf": self.ospf_load,
             "acls": self.acls_load
         }
-    
-    def device_test_connection(self) -> bool:
-        try:
-            self.testbed.connect(log_stdout=False)
-            return True
-        except:
-            return False
 
 class SW_Device(Device):
     """"""
@@ -292,13 +286,7 @@ class SW_Device(Device):
             "switchport": self.switchport_load,
             "acls": self.acls_load
         }
-    
-    def device_test_connection(self) -> bool:
-        try:
-            self.testbed.connect(log_stdout=False)
-            return True
-        except:
-            return False
+
     def config_interface_d(self, interface: str, mode: str, status: bool) -> None:
         config = """
         {}
@@ -355,7 +343,7 @@ class SW_Device(Device):
 
 class Devices:
     """"""
-    def __init__(self, testBed_loc) -> None:
+    def __init__(self, testBed_loc="my_testbed.yaml") -> None:
         self.devices = {}
         self.testbed_loc = testBed_loc
         self.testbed = loader.load(self.testbed_loc)
@@ -370,7 +358,6 @@ class Devices:
 
     def add_devices(self, device: Device) -> None:
         self.devices[device.testbed.custom.hostname] = device
-        print(device.testbed.custom.hostname)
 
     def add_device(self, type: str, hostname: str, ipaddr: str) -> None:
         # add device to yaml file
@@ -382,6 +369,8 @@ class Devices:
         self.devices[hostname] = device
 
     def remove_device(self, hostname: str) -> None:
+        # remove device from yaml file
+        
         del self.devices[hostname]
 
     def get_devices(self) -> list:
@@ -400,5 +389,7 @@ class Devices:
 
 import json
 if __name__ == '__main__':
-    topo = Devices(testBed_loc='backend/npa_project/tb.yaml')
-    json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
+    topo = Devices()
+    print(topo.devices["RS"].device_test_connection())
+    print(topo.devices["test"].device_test_connection())
+    # json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
