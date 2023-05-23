@@ -162,20 +162,20 @@ def set_static_route_del(routes: StaticRouteList):
     return {"message": "success"}
 
 # # # # # # # # # #
-# Router
+# Device
 
-@app.post("/hostname")
-def set_host(name):
-    return {"hostname": name}
+# @app.post("/hostname")
+# def set_host(name):
+#     return {"hostname": name}
 
-@app.post("/dhcp_pool")
-def set_dhcp():
-    return {"dhcp": "set dhcp pool"}
+# @app.post("/dhcp_pool")
+# def set_dhcp():
+#     return {"dhcp": "set dhcp pool"}
 
-''' https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst4000/8-2glx/configuration/guide/ntp.html '''
-@app.post("/ntp/client")
-def set_ntp_client(ntp_ip):
-    return {"ntp_server": ntp_ip}
+# ''' https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst4000/8-2glx/configuration/guide/ntp.html '''
+# @app.post("/ntp/client")
+# def set_ntp_client(ntp_ip):
+#     return {"ntp_server": ntp_ip}
 
 # # # # # # # # # #
 # Telnet / SSH
