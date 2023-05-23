@@ -17,7 +17,6 @@ class Routes:
         self.load_data()
 
     def load_data(self) -> None:
-        # print(self.info)
         pass
 
 class OSPF:
@@ -27,7 +26,6 @@ class OSPF:
         self.load_data()
 
     def load_data(self) -> None:
-        # print(self.info)
         pass
 
 class ACLS:
@@ -37,7 +35,6 @@ class ACLS:
         self.load_data()
 
     def load_data(self) -> None:
-        # print(self.info)
         pass
 
 class Device:
@@ -117,19 +114,19 @@ class Device:
         """
         self.testbed.configure(config.format(dst, network, next_hop))
 
-    def config_ospf_add(self, network: str, wildcard: str, area: int) -> None:
+    def config_ospf_add(self, process: int, network: str, wildcard: str, area: int) -> None:
         config = """
-        router ospf 1
+        router ospf {}
             network {} {} area {}
         """
-        self.testbed.configure(config.format(network, wildcard, area))
+        self.testbed.configure(config.format(process, network, wildcard, area))
     
-    def config_ospf_del(self, network: str, wildcard: str, area: int) -> None:
+    def config_ospf_del(self, process: int, network: str, wildcard: str, area: int) -> None:
         config = """
-        router ospf 1
+        router ospf {}
             no network {} {} area {}
         """
-        self.testbed.configure(config.format(network, wildcard, area))
+        self.testbed.configure(config.format(process, network, wildcard, area))
 
     def config_acls_add(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
         config = """
@@ -169,7 +166,8 @@ class R_Interfaces:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
     # def add_interface(self, interface: Interface) -> None:
     #     self.interfaces.append(interface)

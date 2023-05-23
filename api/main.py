@@ -119,14 +119,22 @@ class OSPF(BaseModel):
     area: int
 
 class OSPFNetwork(BaseModel):
+    device: str
     ospf: List[OSPF]
 
 @app.post("/ospf/{process}")
-def set_network_ospf(process, network: OSPFNetwork):
-    return {
-        "ospf_process": process,
-        "network": network.ospf
-        }
+def set_network_ospf(process, data: OSPFNetwork):
+    data = data.dict()
+    for i in data["ospf"]:
+        topo.devices[data["device"]].config_ospf_add(process, i["network"], i["wildcard"], i["area"])
+    return {"message": "success"}
+
+@app.post("/ospf_del/{process}")
+def del_network_ospf(process, data: OSPFNetwork):
+    data = data.dict()
+    for i in data["ospf"]:
+        topo.devices[data["device"]].config_ospf_del(process, i["network"], i["wildcard"], i["area"])
+    return {"message": "success"}
 
 class StaticRoute(BaseModel):
     network: str
@@ -134,41 +142,54 @@ class StaticRoute(BaseModel):
     next_hop_ip: str
 
 class StaticRouteList(BaseModel):
+    device: str
     routes: List[StaticRoute]
 
 @app.post("/route")
 def set_static_route(routes: StaticRouteList):
-    return {"all_routes": routes.routes}
+    data = routes.routes
+    for i in data:
+        i = i.dict()
+        topo.devices[routes.device].config_static_route_add(i["network"], i["subnet"], i["next_hop_ip"])
+    return {"message": "success"}
+
+@app.post("/route_del")
+def set_static_route_del(routes: StaticRouteList):
+    data = routes.routes
+    for i in data:
+        i = i.dict()
+        topo.devices[routes.device].config_static_route_del(i["network"], i["subnet"], i["next_hop_ip"])
+    return {"message": "success"}
 
 # # # # # # # # # #
-# Router
+# Device
 
-@app.post("/hostname")
-def set_host(name):
-    return {"hostname": name}
+# @app.post("/hostname")
+# def set_host(name):
+#     return {"hostname": name}
 
-@app.post("/dhcp_pool")
-def set_dhcp():
-    return {"dhcp": "set dhcp pool"}
+# @app.post("/dhcp_pool")
+# def set_dhcp():
+#     return {"dhcp": "set dhcp pool"}
 
-''' https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst4000/8-2glx/configuration/guide/ntp.html '''
-@app.post("/ntp/client")
-def set_ntp_client(ntp_ip):
-    return {"ntp_server": ntp_ip}
+# ''' https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst4000/8-2glx/configuration/guide/ntp.html '''
+# @app.post("/ntp/client")
+# def set_ntp_client(ntp_ip):
+#     return {"ntp_server": ntp_ip}
 
 # # # # # # # # # #
 # Telnet / SSH
 
-@app.post("/telnet_cred")
-def set_tel_cred(username, password):
-    return {"telnet_cred": {
-        "username": username,
-        "password": password
-    }}
+# @app.post("/telnet_cred")
+# def set_tel_cred(username, password):
+#     return {"telnet_cred": {
+#         "username": username,
+#         "password": password
+#     }}
 
-@app.post("/ssh_cred")
-def set_ssh_cred(username, password):
-    return {"ssh_cred": {
-        "username": username,
-        "password": password
-    }}
+# @app.post("/ssh_cred")
+# def set_ssh_cred(username, password):
+#     return {"ssh_cred": {
+#         "username": username,
+#         "password": password
+#     }}
