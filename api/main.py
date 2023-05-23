@@ -31,7 +31,7 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/device")
+@app.get("/devices")
 def get_devices():
     try:
         res = topo.get_devices()
