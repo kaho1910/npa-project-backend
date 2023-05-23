@@ -210,7 +210,7 @@ def add_acl(data: AclList):
         return {"message": "fail"}
     return {"message": "success"}
 
-class AclDel:
+class AclDel(BaseModel):
     device: str
     name: str
     label: str
