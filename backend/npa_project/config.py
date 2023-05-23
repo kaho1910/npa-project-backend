@@ -203,7 +203,6 @@ class R_Device(Device):
             return False
 
     def load_data(self) -> None:
-        # self.testbed.connect(log_stdout=False)
         if self.device_test_connection():
             self.get_device_info()
         # self.interfaces = R_Interfaces(self.int_load)
@@ -212,6 +211,7 @@ class R_Device(Device):
         # self.acls = ACLS(self.acls_load)
 
     def get_device_info(self) -> dict:
+        self.testbed.connect(log_stdout=False)
         try:
             self.int_load = self.testbed.parse("show ip interface brief")
         except:
@@ -253,7 +253,6 @@ class SW_Device(Device):
             return False
 
     def load_data(self) -> None:
-        # self.testbed.connect(log_stdout=False)
         if self.device_test_connection():
             self.get_device_info()
         # self.interfaces = SW_Interfaces(self.int_load)
@@ -262,6 +261,7 @@ class SW_Device(Device):
         # self.acls = ACLS(self.acls_load)
 
     def get_device_info(self) -> dict:
+        self.testbed.connect(log_stdout=False)
         try:
             self.int_load = self.testbed.parse("show ip interface brief")
         except:
@@ -437,9 +437,9 @@ class Devices:
 
 import json
 if __name__ == '__main__':
-    topo = Devices()
-    topo.devices["R3"]
+    topo = Devices("my_testbed.yaml")
+    # topo.devices["RS"]
     # topo.remove_device("test")
-    # print(topo.devices["RS"].device_test_connection())
-    # print(topo.devices["test"].device_test_connection())
+    print(topo.devices["RS"].device_test_connection())
+    print(topo.devices["test"].device_test_connection())
     # json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
