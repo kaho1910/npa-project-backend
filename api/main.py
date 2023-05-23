@@ -180,16 +180,16 @@ def set_static_route_del(routes: StaticRouteList):
 # # # # # # # # # #
 # Telnet / SSH
 
-@app.post("/telnet_cred")
-def set_tel_cred(username, password):
-    return {"telnet_cred": {
-        "username": username,
-        "password": password
-    }}
+# @app.post("/telnet_cred")
+# def set_tel_cred(username, password):
+#     return {"telnet_cred": {
+#         "username": username,
+#         "password": password
+#     }}
 
-@app.post("/ssh_cred")
-def set_ssh_cred(username, password):
-    return {"ssh_cred": {
-        "username": username,
-        "password": password
-    }}
+# @app.post("/ssh_cred")
+# def set_ssh_cred(username, password):
+#     return {"ssh_cred": {
+#         "username": username,
+#         "password": password
+#     }}
