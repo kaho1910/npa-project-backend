@@ -2,11 +2,13 @@ from pyats.topology import loader
 
 class Interface:
     """"""
-    def __init__(self, mode: str, ipaddr: str, subnet: str, status: bool) -> None:
-        self.mode = mode
-        self.ipaddr = ipaddr
-        self.subnet = subnet
-        self.status = status
+    def __init__(self, info: dict) -> None:
+        self.info = info
+        self.load_data()
+
+    def load_data(self) -> None:
+        # print(self.info)
+        pass
 
 class Routes:
     """"""
@@ -15,7 +17,6 @@ class Routes:
         self.load_data()
 
     def load_data(self) -> None:
-        #(self.info)
         pass
 
 class OSPF:
@@ -25,7 +26,6 @@ class OSPF:
         self.load_data()
 
     def load_data(self) -> None:
-        #(self.info)
         pass
 
 class ACLS:
@@ -35,14 +35,10 @@ class ACLS:
         self.load_data()
 
     def load_data(self) -> None:
-        #(self.info)
         pass
 
 class Device:
-    """""""" 
-    import abc
-
-    @abc.abstractmethod
+    """"""""
     def device_test_connection(self) -> bool:
         try:
             self.testbed.connect()
@@ -132,33 +128,12 @@ class Device:
         """
         self.testbed.configure(config.format(process, network, wildcard, area))
 
-    def config_acls_add1(self, name: str, action: str, protocol: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} any any {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, eq, port))
-    
-    def config_acls_add2(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} {} {} any {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, ipaddr, wildcard, eq, port))
-
-    def config_acls_add3(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
+    def config_acls_add(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
         config = """
         ip access-list extended {}
             {} {} {} {} {} {} {} {}
         """
         self.testbed.configure(config.format(name, action, protocol, ipaddr, wildcard, dst, network, eq, port))
-    
-    def config_acls_add4(self, name: str, action: str, protocol: str, dst: str, network: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} any {} {} {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, dst, network, eq, port))
 
     def config_acls_del(self, name: str, label: int) -> None:
         config = """
@@ -217,7 +192,6 @@ class R_Device(Device):
 
     def load_data(self) -> None:
         self.testbed.connect(log_stdout=False)
-        type(self.get_device_info())
         self.interfaces = R_Interfaces(self.int_load)
         self.static_routes = Routes(self.route_load)
         self.ospf = OSPF(self.ospf_load)
@@ -250,13 +224,6 @@ class R_Device(Device):
             "ospf": self.ospf_load,
             "acls": self.acls_load
         }
-    
-    def device_test_connection(self) -> bool:
-        try:
-            self.testbed.connect(log_stdout=False)
-            return True
-        except:
-            return False
 
 class SW_Device(Device):
     """"""
@@ -299,6 +266,11 @@ class SW_Device(Device):
             self.ospf_load = {}
             print("Error parsing")
         try:
+            self.switchport_load = self.testbed.parse("show interfaces switchport")
+        except:
+            self.switchport_load = {}
+            print("Error parsing")
+        try:
             self.acls_load = self.testbed.parse("show ip access-lists")
         except:
             self.acls_load = {}
@@ -309,15 +281,10 @@ class SW_Device(Device):
             "stp": self.stp_load,
             "routes": self.route_load,
             "ospf": self.ospf_load,
+            "switchport": self.switchport_load,
             "acls": self.acls_load
         }
-    
-    def device_test_connection(self) -> bool:
-        try:
-            self.testbed.connect(log_stdout=False)
-            return True
-        except:
-            return False
+
     def config_interface_d(self, interface: str, mode: str, status: bool) -> None:
         config = """
         {}
@@ -374,7 +341,7 @@ class SW_Device(Device):
 
 class Devices:
     """"""
-    def __init__(self, testBed_loc) -> None:
+    def __init__(self, testBed_loc="my_testbed.yaml") -> None:
         self.devices = {}
         self.testbed_loc = testBed_loc
         self.testbed = loader.load(self.testbed_loc)
@@ -389,7 +356,6 @@ class Devices:
 
     def add_devices(self, device: Device) -> None:
         self.devices[device.testbed.custom.hostname] = device
-        print(device.testbed.custom.hostname)
 
     def add_device(self, type: str, hostname: str, ipaddr: str) -> None:
         # add device to yaml file
@@ -401,6 +367,8 @@ class Devices:
         self.devices[hostname] = device
 
     def remove_device(self, hostname: str) -> None:
+        # remove device from yaml file
+        
         del self.devices[hostname]
 
     def get_devices(self) -> list:
@@ -419,5 +387,7 @@ class Devices:
 
 import json
 if __name__ == '__main__':
-    topo = Devices(testBed_loc='backend/npa_project/tb.yaml')
-    json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
+    topo = Devices()
+    print(topo.devices["RS"].device_test_connection())
+    print(topo.devices["test"].device_test_connection())
+    # json.dump(topo.devices["R1"].get_device_info(), open('test-topo.json', 'w'), indent=2)
