@@ -61,10 +61,26 @@ def show_ip_route(data: dict):
         res = {"message": "not available"}
     return res
 
+@app.get("/show_ip_route_static")
+def show_ip_route(data: dict):
+    try:
+        res = show_command(data["device"], "show ip route static")
+    except:
+        res = {"message": "not available"}
+    return res
+
 @app.get("/show_ospf")
 def show_ospf(data: dict):
     try:
         res = show_command(data["device"], "show ip ospf")
+    except:
+        res = {"message": "not available"}
+    return res
+
+@app.get("/show_acl")
+def show_acl(data: dict):
+    try:
+        res = show_command(data["device"], "show ip access-lists")
     except:
         res = {"message": "not available"}
     return res
