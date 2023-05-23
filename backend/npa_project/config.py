@@ -128,7 +128,11 @@ class Device:
         """
         self.testbed.configure(config.format(process, network, wildcard, area))
 
-    def config_acls_add(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
+    def config_acls_add(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq: str, port: str) -> None:
+        if eq is None:
+            eq = ""
+        if port is None:
+            port = ""
         config = """
         ip access-list extended {}
             {} {} {} {} {} {} {} {}

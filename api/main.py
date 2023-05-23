@@ -165,6 +165,40 @@ def set_static_route_del(routes: StaticRouteList):
     return {"message": "success"}
 
 # # # # # # # # # #
+# ACLs
+
+class AclList(BaseModel):
+    device: str
+    name: str
+    action: str
+    protocols: str
+    ip: str
+    wildcard: str
+    dst: str
+    network: str
+    eq: str
+    port: str
+    eq: str | None = None
+    port: str | None = None
+
+@app.post("/acl")
+def add_acl(data: AclList):
+    data = data.dict()
+    topo.devices[data["device"]].config_acls_add(data["name"], data["action"], data["protocol"], data["ipaddr"], data["wildcard"], data["dst"], data["network"], eq="", port="")
+    return {"message": "success"}
+
+class AclDel:
+    device: str
+    name: str
+    label: str
+
+@app.post("/acl_del")
+def del_acl(data: AclDel):
+    data = data.dict()
+    topo.devices[data["device"]].config_acls_add(data["name"], data["lavel"])
+    return {"message": "success"}
+
+# # # # # # # # # #
 # Device
 
 # @app.post("/hostname")
