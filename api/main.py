@@ -120,14 +120,8 @@ async def set_interface(data: InterfaceIP):
     elif data["ip"].lower() == "dhcp":
         topo.devices[data["device"]].config_interface_d(f"int {data['interface']}", "", data["status"])
     else:
-        return {"message": message}
-    try:
-        # temp
-        show_command(data["device"], f"show ip interface brief {data['interface']}")
-        message = "success"
-    except:
-        message = "failed"
-    return {"message": message}
+        return {"message": "fail"}
+    return {"message": "success"}
 
 # # # # # # # # # #
 # Routing
@@ -144,15 +138,21 @@ class OSPFNetwork(BaseModel):
 @app.post("/ospf/{process}")
 def set_network_ospf(process, data: OSPFNetwork):
     data = data.dict()
-    for i in data["ospf"]:
-        topo.devices[data["device"]].config_ospf_add(process, i["network"], i["wildcard"], i["area"])
+    try:
+        for i in data["ospf"]:
+            topo.devices[data["device"]].config_ospf_add(process, i["network"], i["wildcard"], i["area"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 @app.post("/ospf_del/{process}")
 def del_network_ospf(process, data: OSPFNetwork):
     data = data.dict()
-    for i in data["ospf"]:
-        topo.devices[data["device"]].config_ospf_del(process, i["network"], i["wildcard"], i["area"])
+    try:
+        for i in data["ospf"]:
+            topo.devices[data["device"]].config_ospf_del(process, i["network"], i["wildcard"], i["area"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 class StaticRoute(BaseModel):
@@ -167,17 +167,23 @@ class StaticRouteList(BaseModel):
 @app.post("/route")
 def set_static_route(routes: StaticRouteList):
     data = routes.routes
-    for i in data:
-        i = i.dict()
-        topo.devices[routes.device].config_static_route_add(i["network"], i["subnet"], i["next_hop_ip"])
+    try:
+        for i in data:
+            i = i.dict()
+            topo.devices[routes.device].config_static_route_add(i["network"], i["subnet"], i["next_hop_ip"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 @app.post("/route_del")
 def set_static_route_del(routes: StaticRouteList):
     data = routes.routes
-    for i in data:
-        i = i.dict()
-        topo.devices[routes.device].config_static_route_del(i["network"], i["subnet"], i["next_hop_ip"])
+    try:
+        for i in data:
+            i = i.dict()
+            topo.devices[routes.device].config_static_route_del(i["network"], i["subnet"], i["next_hop_ip"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 # # # # # # # # # #
@@ -198,7 +204,10 @@ class AclList(BaseModel):
 @app.post("/acl")
 def add_acl(data: AclList):
     data = data.dict()
-    topo.devices[data["device"]].config_acls_add(data["name"], data["action"], data["protocol"], data["ipaddr"], data["wildcard"], data["dst"], data["network"], eq="", port="")
+    try:
+        topo.devices[data["device"]].config_acls_add(data["name"], data["action"], data["protocol"], data["ipaddr"], data["wildcard"], data["dst"], data["network"], eq="", port="")
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 class AclDel:
@@ -209,7 +218,10 @@ class AclDel:
 @app.post("/acl_del")
 def del_acl(data: AclDel):
     data = data.dict()
-    topo.devices[data["device"]].config_acls_add(data["name"], data["lavel"])
+    try:
+        topo.devices[data["device"]].config_acls_add(data["name"], data["lavel"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 # # # # # # # # # #
@@ -275,12 +287,18 @@ class Vlan(BaseModel):
 @app.post("/vlan")
 def add_vlan(data: Vlan):
     data = data.dict()
-    topo.devices[data["device"]].config_vlan_add(f"vlan {data['interface']}", data["name"], data["ip"], data["subnet"], data["description"], data["status"])
+    try:
+        topo.devices[data["device"]].config_vlan_add(f"vlan {data['interface']}", data["name"], data["ip"], data["subnet"], data["description"], data["status"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 @app.post("/vlan_del")
 def del_vlan(data: dict):
-    topo.devices[data.device].config_vlan_del(data.vlan)
+    try:
+        topo.devices[data.device].config_vlan_del(data.vlan)
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 class VlanMode(BaseModel):
@@ -293,11 +311,17 @@ class VlanMode(BaseModel):
 @app.post("/vlan_access")
 def config_vlan_a(data: VlanMode):
     data = data.dict()
-    topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["status"])
+    try:
+        topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["status"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
 
 @app.post("/vlan_trunk")
 def config_vlan_t(data: VlanMode):
     data = data.dict()
-    topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["allow"], data["status"])
+    try:
+        topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["allow"], data["status"])
+    except:
+        return {"message": "fail"}
     return {"message": "success"}
