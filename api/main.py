@@ -271,6 +271,21 @@ def show_vlan(data: dict):
         res = {"message": "not available"}
     return res
 
+@app.get("/show_swp")
+def show_swp(data: dict):
+    try:
+        res = show_command(data["device"], "show interfaces switchport")
+    except:
+        res = {"message": "not available"}
+    return res
+
+@app.get("/show_stp")
+def show_stp(data: dict):
+    try:
+        res = show_command(data["device"], "show spanning-tree")
+    except:
+        res = {"message": "not available"}
+    return res
 
 # # # # # # # # # #
 # Vlan
