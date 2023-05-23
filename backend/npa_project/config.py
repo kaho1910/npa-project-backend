@@ -129,33 +129,12 @@ class Device:
         """
         self.testbed.configure(config.format(network, wildcard, area))
 
-    def config_acls_add1(self, name: str, action: str, protocol: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} any any {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, eq, port))
-    
-    def config_acls_add2(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} {} {} any {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, ipaddr, wildcard, eq, port))
-
-    def config_acls_add3(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
+    def config_acls_add(self, name: str, action: str, protocol: str, ipaddr: str, wildcard: str, dst: str, network: str, eq="", port="") -> None:
         config = """
         ip access-list extended {}
             {} {} {} {} {} {} {} {}
         """
         self.testbed.configure(config.format(name, action, protocol, ipaddr, wildcard, dst, network, eq, port))
-    
-    def config_acls_add4(self, name: str, action: str, protocol: str, dst: str, network: str, eq="", port="") -> None:
-        config = """
-        ip access-list extended {}
-            {} {} any {} {} {} {}
-        """
-        self.testbed.configure(config.format(name, action, protocol, dst, network, eq, port))
 
     def config_acls_del(self, name: str, label: int) -> None:
         config = """
@@ -295,6 +274,11 @@ class SW_Device(Device):
             self.ospf_load = {}
             print("Error parsing")
         try:
+            self.switchport_load = self.testbed.parse("show interfaces switchport")
+        except:
+            self.switchport_load = {}
+            print("Error parsing")
+        try:
             self.acls_load = self.testbed.parse("show ip access-lists")
         except:
             self.acls_load = {}
@@ -305,6 +289,7 @@ class SW_Device(Device):
             "stp": self.stp_load,
             "routes": self.route_load,
             "ospf": self.ospf_load,
+            "switchport": self.switchport_load,
             "acls": self.acls_load
         }
     
