@@ -99,14 +99,14 @@ def show_all(data: dict):
 @app.get("/ip_addr")
 def get_ip(data: dict):
     try:
-        res = show_command(data["device"], f"show ip interface brief {data['interface']}")
+        res = show_command(data["device"], f"show ip interface brief {data['interfaceName']}")
     except:
         res = {"message": "not available"}
     return res
 
 class InterfaceIP(BaseModel):
     device: str
-    interface: str
+    interfaceName: str
     description: str | None = None
     ip: str
     subnet: str | None = None
@@ -116,9 +116,9 @@ class InterfaceIP(BaseModel):
 async def set_interface(data: InterfaceIP):
     data = data.dict()
     if not data["ip"].isalpha():
-        topo.devices[data["device"]].config_interface_s(f"int {data['interface']}", "", data["ip"], data["subnet"], data["description"], data["status"])
+        topo.devices[data["device"]].config_interface_s(f"int {data['interfaceName']}", "", data["ip"], data["subnet"], data["description"], data["status"])
     elif data["ip"].lower() == "dhcp":
-        topo.devices[data["device"]].config_interface_d(f"int {data['interface']}", "", data["status"])
+        topo.devices[data["device"]].config_interface_d(f"int {data['interfaceName']}", "", data["status"])
     else:
         return {"message": "fail"}
     return {"message": "success"}
@@ -303,7 +303,7 @@ class Vlan(BaseModel):
 def add_vlan(data: Vlan):
     data = data.dict()
     try:
-        topo.devices[data["device"]].config_vlan_add(f"vlan {data['interface']}", data["name"], data["ip"], data["subnet"], data["description"], data["status"])
+        topo.devices[data["device"]].config_vlan_add(f"vlan {data['vlan']}", data["name"], data["ip"], data["subnet"], data["description"], data["status"])
     except:
         return {"message": "fail"}
     return {"message": "success"}
@@ -318,7 +318,7 @@ def del_vlan(data: dict):
 
 class VlanMode(BaseModel):
     device: str
-    interface: str
+    interfaceName: str
     vlan: int
     allow: str | None = None
     status: bool
@@ -327,7 +327,7 @@ class VlanMode(BaseModel):
 def config_vlan_a(data: VlanMode):
     data = data.dict()
     try:
-        topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["status"])
+        topo.devices[data["device"]].config_interface_sw_a(data["interfaceName"], data["vlan"], data["status"])
     except:
         return {"message": "fail"}
     return {"message": "success"}
@@ -336,7 +336,7 @@ def config_vlan_a(data: VlanMode):
 def config_vlan_t(data: VlanMode):
     data = data.dict()
     try:
-        topo.devices[data["device"]].config_interface_sw_a(data["interface"], data["vlan"], data["allow"], data["status"])
+        topo.devices[data["device"]].config_interface_sw_a(data["interfaceName"], data["vlan"], data["allow"], data["status"])
     except:
         return {"message": "fail"}
     return {"message": "success"}
