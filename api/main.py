@@ -96,7 +96,7 @@ class InterfaceIP(BaseModel):
 @app.post("/interface")
 async def set_interface(data: InterfaceIP):
     data = data.dict()
-    if not data["ip"].isalpa():
+    if not data["ip"].isalpha():
         topo.devices[data["device"]].config_interface_s(f"int {data['interface']}", "", data["ip"], data["subnet"], data["description"], data["status"])
     elif data["ip"].lower() == "dhcp":
         topo.devices[data["device"]].config_interface_d(f"int {data['interface']}", "", data["status"])

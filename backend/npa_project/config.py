@@ -73,7 +73,7 @@ class Device:
     def config_interface_d(self, interface: str, mode: str, desc: str,status: bool) -> None:
         # self.interfaces[interface].mode = mode
         # self.interfaces[interface].status = status
-        if desc == "":
+        if desc is None:
             desc = "\n"
         else:
             desc = "desc " + desc
@@ -90,7 +90,7 @@ class Device:
         # self.interfaces[interface].ipaddr = ipaddr
         # self.interfaces[interface].subnet = subnet
         # self.interfaces[interface].status = status
-        if desc == "":
+        if desc is None:
             desc = "\n"
         else:
             desc = "desc " + desc
