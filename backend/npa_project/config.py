@@ -15,7 +15,8 @@ class Routes:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        #(self.info)
+        pass
 
 class OSPF:
     """"""
@@ -24,7 +25,8 @@ class OSPF:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        #(self.info)
+        pass
 
 class ACLS:
     """"""
@@ -33,7 +35,8 @@ class ACLS:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        #(self.info)
+        pass
 
 class Device:
     """""""" 
@@ -188,7 +191,8 @@ class R_Interfaces:
         self.load_data()
 
     def load_data(self) -> None:
-        print(self.info)
+        # print(self.info)
+        pass
 
     # def add_interface(self, interface: Interface) -> None:
     #     self.interfaces.append(interface)
