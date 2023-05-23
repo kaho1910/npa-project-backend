@@ -31,6 +31,14 @@ app = FastAPI()
 async def root():
     return {"message": "Hello World"}
 
+@app.get("/device")
+def get_devices():
+    try:
+        res = topo.get_devices()
+    except:
+        res = {"message": "not availabe"}
+    return res
+
 # # # # # # # # # # # # # # # # # # # #
 # ROUTER
 
