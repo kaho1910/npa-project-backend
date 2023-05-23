@@ -284,6 +284,7 @@ class SW_Device(Device):
             "switchport": self.switchport_load,
             "acls": self.acls_load
         }
+
     def config_interface_d(self, interface: str, mode: str, desc: str, status: bool) -> None:
         config = """
         {}
