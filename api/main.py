@@ -40,6 +40,25 @@ def get_devices():
     return res
 
 # # # # # # # # # # # # # # # # # # # #
+# DEVICES
+
+@app.post("/add_device")
+def device_add(data: dict):
+    try:
+        topo.add_device(data["type_device"], data["hostname"], data["ip"])
+    except:
+        return {"message": "fail"}
+    return {"message": "success"}
+
+@app.post("/del_device")
+def device_del(data: dict):
+    try:
+        topo.remove_device(data["hostname"])
+    except:
+        return {"message": "fail"}
+    return {"message": "success"}
+
+# # # # # # # # # # # # # # # # # # # #
 # ROUTER
 
 # # # # # # # # # #
