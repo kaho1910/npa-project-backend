@@ -1,0 +1,65 @@
+devices:
+    R1:
+        connections:
+            cli:
+                command: "ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.231"
+        credentials:
+            default:
+                password: "%ENC{w5HDncOOw53DocKQwpbCmMKa}"
+                username: admin
+            enable:
+                password: "%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}"
+        os: iosxe
+        platform: iosv
+        custom:
+            type: Router
+            hostname: R1
+            ipaddress: 10.0.15.231
+    R2:
+        connections:
+            cli:
+                command: "ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.232"
+        credentials:
+            default:
+                password: "%ENC{w5HDncOOw53DocKQwpbCmMKa}"
+                username: admin
+            enable:
+                password: "%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}"
+        os: iosxe
+        platform: iosv
+        custom:
+            type: Router
+            hostname: R2
+            ipaddress: 10.0.15.232
+    R3:
+        connections:
+            cli:
+                command: "ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.233"
+        credentials:
+            default:
+                password: "%ENC{w5HDncOOw53DocKQwpbCmMKa}"
+                username: admin
+            enable:
+                password: "%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}"
+        os: iosxe
+        platform: iosv
+        custom:
+            type: Router
+            hostname: R3
+            ipaddress: 10.0.15.233
+    R4:
+        connections:
+            cli:
+                command: "ssh  -oKexAlgorithms=diffie-hellman-group14-sha1 -oHostKeyAlgorithms=ssh-rsa -l admin 10.0.15.234"
+        credentials:
+            default:
+                password: "%ENC{w5HDncOOw53DocKQwpbCmMKa}"
+                username: admin
+            enable:
+                password: "%ENC{w6LDqMOQw6jDpcOOw5PDmQ==}"
+        os: iosxe
+        platform: iosv
+        custom:
+            type: Router
+            hostname: R4
+            ipaddress: 10.0.15.234

@@ -1,2 +1,4 @@
 .venv
-/api/__pycache__
+/backend/output
+__pycache__
+test.json
