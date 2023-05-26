@@ -79,7 +79,7 @@ def device_del(data: dict):
 # # # # # # # # # #
 # Show
 
-@app.get("/show_ip")
+@app.post("/show_ip")
 def show_ip(data: dict):
     try:
         res = show_command(data["device"], "show ip interface brief")
@@ -87,15 +87,15 @@ def show_ip(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_run")
-def show_run():
-    try:
-        res = {"message": "show running config"} # NOT DONE
-    except:
-        res = {"message": "not available"}
-    return res
+# @app.get("/show_run")
+# def show_run():
+#     try:
+#         res = {"message": "show running config"} # NOT DONE
+#     except:
+#         res = {"message": "not available"}
+#     return res
 
-@app.get("/show_ip_route")
+@app.post("/show_ip_route")
 def show_ip_route(data: dict):
     try:
         res = show_command(data["device"], "show ip route")
@@ -103,7 +103,7 @@ def show_ip_route(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_ip_route_static")
+@app.post("/show_ip_route_static")
 def show_ip_route(data: dict):
     try:
         res = show_command(data["device"], "show ip route static")
@@ -111,7 +111,7 @@ def show_ip_route(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_ospf")
+@app.post("/show_ospf")
 def show_ospf(data: dict):
     try:
         res = show_command(data["device"], "show ip ospf")
@@ -119,7 +119,7 @@ def show_ospf(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_acl")
+@app.post("/show_acl")
 def show_acl(data: dict):
     try:
         res = show_command(data["device"], "show ip access-lists")
@@ -127,7 +127,7 @@ def show_acl(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_all")
+@app.post("/show_all")
 def show_all(data: dict):
     try:
         res = topo.devices[data["device"]].get_device_info()
@@ -138,7 +138,7 @@ def show_all(data: dict):
 # # # # # # # # # #
 # Interface
 
-@app.get("/ip_addr")
+@app.post("/ip_addr")
 def get_ip(data: dict):
     try:
         res = show_command(data["device"], f"show ip interface brief {data['interfaceName']}")
@@ -305,7 +305,7 @@ def del_acl(data: AclDel):
 # # # # # # # # # #
 # Show
 
-@app.get("/show_vlan")
+@app.post("/show_vlan")
 def show_vlan(data: dict):
     try:
         res = show_command(data["device"], "show vlan")
@@ -313,7 +313,7 @@ def show_vlan(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_swp")
+@app.post("/show_swp")
 def show_swp(data: dict):
     try:
         res = show_command(data["device"], "show interfaces switchport")
@@ -321,7 +321,7 @@ def show_swp(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_stp")
+@app.post("/show_stp")
 def show_stp(data: dict):
     try:
         res = show_command(data["device"], "show spanning-tree")
