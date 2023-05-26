@@ -14,6 +14,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
@@ -23,6 +24,20 @@ from backend.npa_project.config import *
 topo = Devices(testBed_loc="../backend/npa_project/tb.yaml")
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000"
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    # allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # # # # # # # # # #
 # TEST API
