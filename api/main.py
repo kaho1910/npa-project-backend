@@ -14,6 +14,7 @@ parent = os.path.dirname(current)
 sys.path.append(parent)
 
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List
 
@@ -23,6 +24,20 @@ from backend.npa_project.config import *
 topo = Devices(testBed_loc="../backend/npa_project/tb.yaml")
 
 app = FastAPI()
+
+origins = [
+    "http://localhost",
+    "http://localhost:3000"
+    "http://localhost:8000",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    # allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # # # # # # # # # #
 # TEST API
@@ -58,13 +73,21 @@ def device_del(data: dict):
         return {"message": "fail"}
     return {"message": "success"}
 
+@app.post("/save")
+def save(data: dict):
+    try:
+        topo.devices[data["device"]].save_config()
+    except:
+        return {"message": "fail"}
+    return {"message": "success"}
+
 # # # # # # # # # # # # # # # # # # # #
 # ROUTER
 
 # # # # # # # # # #
 # Show
 
-@app.get("/show_ip")
+@app.post("/show_ip")
 def show_ip(data: dict):
     try:
         res = show_command(data["device"], "show ip interface brief")
@@ -73,14 +96,15 @@ def show_ip(data: dict):
     return res
 
 @app.get("/show_run")
-def show_run():
+def show_run(data: dict):
     try:
-        res = {"message": "show running config"} # NOT DONE
+        config = topo.devices[data["device"]].get_backup_config()
+        res = {"message": config}
     except:
         res = {"message": "not available"}
     return res
 
-@app.get("/show_ip_route")
+@app.post("/show_ip_route")
 def show_ip_route(data: dict):
     try:
         res = show_command(data["device"], "show ip route")
@@ -88,7 +112,7 @@ def show_ip_route(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_ip_route_static")
+@app.post("/show_ip_route_static")
 def show_ip_route(data: dict):
     try:
         res = show_command(data["device"], "show ip route static")
@@ -96,7 +120,7 @@ def show_ip_route(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_ospf")
+@app.post("/show_ospf")
 def show_ospf(data: dict):
     try:
         res = show_command(data["device"], "show ip ospf")
@@ -104,7 +128,7 @@ def show_ospf(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_acl")
+@app.post("/show_acl")
 def show_acl(data: dict):
     try:
         res = show_command(data["device"], "show ip access-lists")
@@ -112,7 +136,7 @@ def show_acl(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_all")
+@app.post("/show_all")
 def show_all(data: dict):
     try:
         res = topo.devices[data["device"]].get_device_info()
@@ -123,7 +147,7 @@ def show_all(data: dict):
 # # # # # # # # # #
 # Interface
 
-@app.get("/ip_addr")
+@app.post("/ip_addr")
 def get_ip(data: dict):
     try:
         res = show_command(data["device"], f"show ip interface brief {data['interfaceName']}")
@@ -160,24 +184,25 @@ class OSPF(BaseModel):
 
 class OSPFNetwork(BaseModel):
     device: str
+    process: int
     ospf: List[OSPF]
 
-@app.post("/ospf/{process}")
-def set_network_ospf(process, data: OSPFNetwork):
+@app.post("/ospf")
+def set_network_ospf(data: OSPFNetwork):
     data = data.dict()
     try:
         for i in data["ospf"]:
-            topo.devices[data["device"]].config_ospf_add(process, i["network"], i["wildcard"], i["area"])
+            topo.devices[data["device"]].config_ospf_add(data["process"], i["network"], i["wildcard"], i["area"])
     except:
         return {"message": "fail"}
     return {"message": "success"}
 
-@app.post("/ospf_del/{process}")
-def del_network_ospf(process, data: OSPFNetwork):
+@app.post("/ospf_del")
+def del_network_ospf(data: OSPFNetwork):
     data = data.dict()
     try:
         for i in data["ospf"]:
-            topo.devices[data["device"]].config_ospf_del(process, i["network"], i["wildcard"], i["area"])
+            topo.devices[data["device"]].config_ospf_del(data["process"], i["network"], i["wildcard"], i["area"])
     except:
         return {"message": "fail"}
     return {"message": "success"}
@@ -290,7 +315,7 @@ def del_acl(data: AclDel):
 # # # # # # # # # #
 # Show
 
-@app.get("/show_vlan")
+@app.post("/show_vlan")
 def show_vlan(data: dict):
     try:
         res = show_command(data["device"], "show vlan")
@@ -298,7 +323,7 @@ def show_vlan(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_swp")
+@app.post("/show_swp")
 def show_swp(data: dict):
     try:
         res = show_command(data["device"], "show interfaces switchport")
@@ -306,7 +331,7 @@ def show_swp(data: dict):
         res = {"message": "not available"}
     return res
 
-@app.get("/show_stp")
+@app.post("/show_stp")
 def show_stp(data: dict):
     try:
         res = show_command(data["device"], "show spanning-tree")
